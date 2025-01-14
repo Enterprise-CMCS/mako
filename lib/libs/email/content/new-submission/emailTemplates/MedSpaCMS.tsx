@@ -1,13 +1,12 @@
 import { CommonEmailVariables, Events } from "shared-types";
 import {
   Attachments,
-  DetailsHeading,
   LoginInstructions,
   PackageDetails,
   BasicFooter,
 } from "../../email-components";
 import { BaseEmailTemplate } from "../../email-templates";
-import { formatDate } from "lib/packages/shared-utils";
+import { formatDate } from "shared-utils";
 
 export const MedSpaCMSEmail = (props: {
   variables: Events["NewMedicaidSubmission"] & CommonEmailVariables;
@@ -23,11 +22,10 @@ export const MedSpaCMSEmail = (props: {
       applicationEndpointUrl={variables.applicationEndpointUrl}
       footerContent={<BasicFooter />}
     >
-      <DetailsHeading />
-      <LoginInstructions appEndpointURL={variables.applicationEndpointUrl} />
+      <LoginInstructions appEndpointURL={variables.applicationEndpointUrl} useThisLink />
       <PackageDetails
         details={{
-          "State or territory": variables.territory,
+          "State or Territory": variables.territory,
           Name: variables.submitterName,
           Email: variables.submitterEmail,
           "Medicaid SPA ID": variables.id,

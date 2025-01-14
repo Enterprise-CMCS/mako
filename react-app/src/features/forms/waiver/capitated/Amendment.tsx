@@ -11,7 +11,7 @@ import {
 } from "@/components";
 import { formSchemas } from "@/formSchemas";
 import { FAQ_TAB } from "@/router";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { getFAQLinkForAttachments } from "../../faqLinks";
 
 interface AmendmentFormProps {
@@ -50,7 +50,7 @@ export const AmendmentForm = ({ waiverId }: AmendmentFormProps) => {
                   <FormLabel className="font-semibold" data-testid="existing-waiver-label">
                     Existing Waiver Number to Amend <RequiredIndicator />
                   </FormLabel>
-                  <p className="text-gray-500 font-light">
+                  <p className="text-neutral-500">
                     Enter the existing waiver number you are seeking to amend in the format it was
                     approved, using a dash after the two character state abbreviation.
                   </p>
@@ -84,7 +84,7 @@ export const AmendmentForm = ({ waiverId }: AmendmentFormProps) => {
                     What is my 1915(b) Waiver Amendment Number?
                   </Link>
                 </div>
-                <p className="text-gray-500 font-light">
+                <p className="text-neutral-500">
                   The Waiver Number must be in the format of SS-####.R##.## or SS-#####.R##.##. For
                   amendments, the last two digits start with {"'01'"} and ascends.
                 </p>

@@ -4,10 +4,9 @@ import {
   LoginInstructions,
   BasicFooter,
   Attachments,
-  DetailsHeading,
 } from "../../email-components";
 import { BaseEmailTemplate } from "../../email-templates";
-import { formatNinetyDaysDate } from "lib/packages/shared-utils";
+import { formatNinetyDaysDate } from "shared-utils";
 
 export const TempExtCMSEmail = (props: {
   variables: Events["TempExtension"] & CommonEmailVariables;
@@ -22,11 +21,10 @@ export const TempExtCMSEmail = (props: {
       applicationEndpointUrl={variables.applicationEndpointUrl}
       footerContent={<BasicFooter />}
     >
-      <DetailsHeading />
       <LoginInstructions appEndpointURL={variables.applicationEndpointUrl} />
       <PackageDetails
         details={{
-          "State or territory": variables.territory,
+          "State or Territory": variables.territory,
           Name: variables.submitterName,
           "Email Address": variables.submitterEmail,
           "Temporary Extension Request Number": variables.id,

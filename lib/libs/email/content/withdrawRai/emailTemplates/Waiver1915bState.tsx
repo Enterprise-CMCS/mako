@@ -1,39 +1,32 @@
-import { CommonEmailVariables } from "shared-types";
-import { RaiWithdraw } from "shared-types";
 import {
   WithdrawRAI,
   PackageDetails,
-  ContactStateLead,
+  FollowUpNotice,
   MailboxNotice,
-  Attachments,
+  WithdrawRAIProps,
 } from "../../email-components";
 import { BaseEmailTemplate } from "../../email-templates";
 
-export const Waiver1915bStateEmail = (props: {
-  variables: RaiWithdraw & CommonEmailVariables;
-  relatedEvent: any;
-}) => {
-  const { variables, relatedEvent } = { ...props };
-  const previewText = `Waiver ${variables.id} Withdrawn`;
+export const Waiver1915bStateEmail = (props: WithdrawRAIProps) => {
+  const previewText = `Waiver ${props.relatedEvent.id} Withdrawn`;
   const heading = "This response confirms you have withdrawn a Waiver from CMS for review";
   return (
     <BaseEmailTemplate
       previewText={previewText}
       heading={heading}
-      applicationEndpointUrl={variables.applicationEndpointUrl}
-      footerContent={<ContactStateLead />}
+      applicationEndpointUrl={props.variables.applicationEndpointUrl}
+      footerContent={<FollowUpNotice />}
     >
-      <WithdrawRAI {...variables} />
+      <WithdrawRAI variables={props.variables} relatedEvent={props.relatedEvent} />
       <PackageDetails
         details={{
-          "State or territory": variables.territory,
-          Name: relatedEvent.submitterName,
-          "Email Address": relatedEvent.submitterEmail,
-          "Waiver Number": variables.id,
-          Summary: variables.additionalInformation,
+          "State or Territory": props.variables.territory,
+          Name: props.variables.submitterName,
+          "Email Address": props.variables.submitterEmail,
+          "Waiver Number": props.variables.id,
+          Summary: props.variables.additionalInformation,
         }}
       />
-      <Attachments attachments={variables.attachments as any} />
       <MailboxNotice type="Waiver" />
     </BaseEmailTemplate>
   );

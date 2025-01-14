@@ -1,7 +1,5 @@
-import MedicaidLogo from "@/assets/MedicaidLogo.svg";
-import DepartmentOfHealthLogo from "@/assets/DepartmentOfHealthLogo.svg";
 import { Alert, Button } from "@/components";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 type Props = {
   email: string;
@@ -19,19 +17,18 @@ export const Footer = ({ email, address }: Props) => {
       <section className="bg-sky-100">
         <div className="grid grid-cols-12 gap-4 px-10 py-4 max-w-screen-xl mx-auto">
           <img
-            src={MedicaidLogo}
+            src="/MedicaidLogo.svg"
             alt="Logo for Medicaid"
             className="w-36 col-span-6 sm:col-span-6 justify-self-start self-center sm:justify-self-start sm:self-center"
           />
           <img
             className="max-w-36 col-span-6 sm:col-span-2 justify-self-end self-center"
-            src={DepartmentOfHealthLogo}
+            src="/DepartmentOfHealthLogo.svg"
             alt="Logo for Department of Health and Human Services"
           />
           <p className="col-span-12 sm:col-span-4">
-            A federal government website managed and paid for by the U.S.
-            Centers for Medicare and Medicaid Services and part of the MACPro
-            suite.
+            A federal government website managed and paid for by the U.S. Centers for Medicare and
+            Medicaid Services and part of the MACPro suite.
           </p>
         </div>
       </section>

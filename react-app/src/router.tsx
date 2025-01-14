@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router";
 import * as F from "@/features";
 import * as C from "@/components";
 import {
@@ -23,7 +23,11 @@ export const router = createBrowserRouter([
         element: <F.Dashboard />,
         loader: F.dashboardLoader(queryClient),
       },
-      { path: "/details/:authority/:id", element: <F.Details /> },
+      {
+        path: "/details/:authority/:id",
+        element: <F.Details />,
+        loader: F.packageDetailsLoader,
+      },
       {
         path: "/new-submission/spa/medicaid/create",
         element: <F.MedicaidForm />,
@@ -100,10 +104,6 @@ export const router = createBrowserRouter([
         path: "/new-submission/spa/medicaid/landing/medicaid-eligibility",
         element: <F.MedicaidEligibilityLandingPage />,
       },
-      {
-        path: "/new-submission/spa/chip/landing/chip-eligibility",
-        element: <F.CHIPEligibilityLandingPage />,
-      },
       { path: "/webforms", element: <F.WebformsList /> },
       { path: "/webform/:id/:version", element: <F.Webform /> },
       { path: "/profile", element: <F.Profile /> },
@@ -115,5 +115,6 @@ export const router = createBrowserRouter([
       },
     ],
     loader: F.loader(queryClient),
+    HydrateFallback: () => null,
   },
 ]);

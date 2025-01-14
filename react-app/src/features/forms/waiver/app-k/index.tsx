@@ -1,20 +1,20 @@
 import {
   ActionForm,
   DatePicker,
-  Input,
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
+  Input,
   RequiredIndicator,
   Textarea,
 } from "@/components";
-import { Authority } from "shared-types";
 import { formSchemas } from "@/formSchemas";
-import { Link } from "react-router-dom";
 import { FAQ_TAB } from "@/router";
+import { Link } from "react-router";
+import { Authority } from "shared-types";
 import { getFAQLinkForAttachments } from "../../faqLinks";
 
 export const AppKAmendmentForm = () => (
@@ -25,11 +25,9 @@ export const AppKAmendmentForm = () => (
     fields={(form) => (
       <>
         <div>
-          <p className="mt-4 text-gray-700 font-light">
-            <span className="font-bold">
-              If your Appendix K submission is for more than one waiver number, please enter one of
-              the applicable waiver numbers. You do not need to create multiple submissions.
-            </span>
+          <p className="mt-4 font-bold">
+            If your Appendix K submission is for more than one waiver number, please enter one of
+            the applicable waiver numbers. You do not need to create multiple submissions.
           </p>
         </div>
         <FormField
@@ -40,7 +38,12 @@ export const AppKAmendmentForm = () => (
               <FormLabel className="font-bold" htmlFor="amendment-title">
                 Amendment Title <RequiredIndicator />
               </FormLabel>
-              <Textarea {...field} className="h-[80px]" id="amendment-title" maxLength={125} />
+              <Textarea
+                {...field}
+                className="h-[76px] w-[355px]"
+                id="amendment-title"
+                maxLength={125}
+              />
               <FormDescription>
                 <span
                   tabIndex={0}
@@ -77,10 +80,10 @@ export const AppKAmendmentForm = () => (
                   rel="noopener noreferrer"
                   className="text-blue-900 underline"
                 >
-                  What is my waiver amendment number?
+                  What is my Waiver Amendment Number?
                 </Link>
               </div>
-              <p className="text-gray-500 font-light" id="waiver-number-format">
+              <p className="text-neutral-500" id="waiver-number-format">
                 The Waiver Number must be in the the format SS-####.R##.## or SS-#####.R##.##. For
                 amendments, the last two digits start with '01' and ascends.
               </p>

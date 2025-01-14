@@ -1,8 +1,15 @@
-import { Text, Link, Section, Row, Column, Hr, Heading } from "@react-email/components";
-import { Attachment, AttachmentTitle, AttachmentKey } from "shared-types";
-import { createRef, forwardRef, ReactNode } from "react";
+import { Column, Heading, Hr, Link, Row, Section, Text } from "@react-email/components";
+import { ReactNode } from "react";
+import {
+  Attachment,
+  AttachmentKey,
+  AttachmentTitle,
+  CommonEmailVariables,
+  EmailAddresses,
+  Events,
+} from "shared-types";
 import { styles } from "./email-styles";
-
+import * as os from "shared-types/opensearch";
 export const EMAIL_CONFIG = {
   DEV_EMAIL: "mako.stateuser+dev-to@gmail.com",
   CHIP_EMAIL: "CHIPSPASubmissionMailBox@cms.hhs.gov",
@@ -26,6 +33,8 @@ const areAllAttachmentsEmpty = (
   return Object.values(attachments).every((att) => !att || att.files?.length === 0);
 };
 
+const Divider = () => <Hr style={styles.divider} />;
+
 const Textarea = ({ children }: { children: React.ReactNode }) => (
   <Text
     style={{
@@ -42,53 +51,84 @@ const Textarea = ({ children }: { children: React.ReactNode }) => (
   </Text>
 );
 
-const LogoContainer = forwardRef<HTMLSpanElement, { url: string }>(({ url }, ref) => (
-  <header ref={ref} style={styles.logo.container}>
-    <Link href={url} target="_blank" style={styles.logo.link}>
+const EmailNav = ({ appEndpointUrl }: { appEndpointUrl: string }) => (
+  <Section style={styles.logo.container}>
+    <Link href={appEndpointUrl} target="_blank" style={styles.logo.link}>
       <img
         height={40}
         width={112}
         style={{ maxWidth: "112px" }}
-        src={`${url}onemac-logo.png`}
+        src={`${appEndpointUrl}onemac-logo.png`}
         alt="OneMAC Logo"
       />
-      <img alt="" />
     </Link>
-  </header>
-));
-
-const EmailNav = ({ appEndpointUrl }: { appEndpointUrl: string }) => (
-  <Section>
-    <LogoContainer ref={createRef()} url={appEndpointUrl} />
   </Section>
 );
 
-const LoginInstructions = ({ appEndpointURL }: { appEndpointURL: string }) => (
+const LoginInstructions = ({
+  appEndpointURL,
+  useThisLink,
+}: {
+  appEndpointURL: string;
+  useThisLink?: boolean;
+}) => (
   <ul style={{ marginLeft: "-20px" }}>
     <li>
       <Text style={styles.text.description}>
-        The submission can be accessed in the OneMAC application at{" "}
-        <Link href={appEndpointURL}>{appEndpointURL}</Link>
+        The submission can be accessed in the OneMAC application, which you can find at{" "}
+        <Link href={appEndpointURL}>{useThisLink ? "this link" : appEndpointURL}</Link>.
       </Text>
     </li>
     <li>
       <Text style={styles.text.description}>
-        If not logged in, click "Login" at the top and use your Enterprise User Administration (EUA)
-        credentials.
+        If you are not already logged in, please click the "Login" link at the top of the page and
+        log in using your Enterprise User Administration (EUA) credentials.
       </Text>
     </li>
     <li>
       <Text style={styles.text.description}>
-        After logging in, you'll see the submission listed on the dashboard. Click its ID number to
-        view details.
+        After you have logged in, you will be taken to the OneMAC application. The submission will
+        be listed on the dashboard page, and you can view its details by clicking on its ID number.
       </Text>
     </li>
   </ul>
 );
 
+const SubDocHowToAccess = ({
+  appEndpointURL,
+}: {
+  appEndpointURL: string;
+  useThisLink?: boolean;
+}) => (
+  <>
+    <Divider />
+    <Text style={{ ...styles.text.base, fontWeight: "bold" }}>How to Access:</Text>
+    <ul>
+      <li>
+        <Text style={styles.text.description}>
+          These documents can be found in OneMAC through this link{" "}
+          <Link href={appEndpointURL}>{appEndpointURL}</Link>.
+        </Text>
+      </li>
+      <li>
+        <Text style={styles.text.description}>
+          If you are not already logged in, click “Login” at the top of the page and log in using
+          your Enterprise User Administration (EUA) credentials.
+        </Text>
+      </li>
+
+      <li>
+        <Text style={styles.text.description}>
+          After you logged in, click the submission ID number on the dashboard page to view details.
+        </Text>
+      </li>
+    </ul>
+  </>
+);
+
 const DetailsHeading = () => (
   <div>
-    <Hr style={styles.divider} />
+    <Divider />
     <Heading as="h2" style={styles.heading.h2}>
       Details:
     </Heading>
@@ -106,7 +146,7 @@ const Attachments = ({
 
   return (
     <>
-      <Hr style={styles.divider} />
+      <Divider />
       <Heading as="h2" style={styles.heading.h2}>
         Files:
       </Heading>
@@ -114,7 +154,7 @@ const Attachments = ({
       {Object.entries(attachments).map(([key, group]) => {
         if (!group?.files?.length) return null;
 
-        return (
+        return group.files.map((file, index) => (
           <Row key={key} style={{ marginBottom: "2px", marginTop: "2px" }}>
             <Column
               align="left"
@@ -123,20 +163,18 @@ const Attachments = ({
                 verticalAlign: "top",
               }}
             >
-              <Text style={{ ...styles.text.title }}>{group.label}:</Text>
+              {" "}
+              <span key={group.label + index}>
+                <Text style={{ ...styles.text.title }}>{group.label}:</Text>{" "}
+              </span>
             </Column>
             <Column style={{ verticalAlign: "top" }}>
               <Text style={styles.text.description}>
-                {group.files.map((file, index) => (
-                  <span key={file.filename + index}>
-                    {file.filename}
-                    {index < (group.files?.length ?? 0) - 1 && <br />}
-                  </span>
-                ))}
+                <span key={file.filename + index}>{file.filename}</span>
               </Text>
             </Column>
           </Row>
-        );
+        ));
       })}
     </>
   );
@@ -148,13 +186,19 @@ const PackageDetails = ({ details }: { details: Record<string, ReactNode> }) => 
       if (label === "Summary") {
         return (
           <Row key={label + index}>
-            <Hr style={styles.divider} />
+            <Divider />
             <Text style={{ margin: ".5em" }}>
               <Heading as="h2" style={styles.heading.h2}>
                 Summary:
               </Heading>
             </Text>
-            <Textarea>{value ?? "No additional information submitted"}</Textarea>
+            <Text
+              style={{
+                whiteSpace: "pre-line",
+              }}
+            >
+              {value ?? "No additional information submitted"}
+            </Text>
           </Row>
         );
       }
@@ -162,7 +206,7 @@ const PackageDetails = ({ details }: { details: Record<string, ReactNode> }) => 
       return (
         <Row key={label + index}>
           <Column align="left" style={{ width: "50%" }}>
-            <Text style={styles.text.title}>{label}</Text>
+            <Text style={styles.text.title}>{label}:</Text>
           </Column>
           <Column>
             <Text style={styles.text.description}>{value ?? "Not provided"}</Text>
@@ -182,40 +226,41 @@ const MailboxNotice = ({ type }: { type: "SPA" | "Waiver" }) => (
   </Text>
 );
 
-const SpamNotice = () => (
-  <Section>
-    <Text style={{ ...styles.text.description, marginTop: "8px" }}>
-      If the contents of this email seem suspicious, do not open them, and instead forward this
-      email to{" "}
-      <Link href="mailto:SPAM.hhs.gov" style={{ textDecoration: "underline" }}>
-        SPAM@cms.hhs.gov
-      </Link>
-      .
-    </Text>
-    <Text>Thank you.</Text>
-  </Section>
-);
-
-const ContactStateLead = ({ isChip }: { isChip?: boolean }) => (
-  <Section
-    style={{
-      ...styles.section.footer,
-      paddingLeft: "16px",
-      paddingRight: "16px",
-    }}
-  >
-    <Text style={{ fontSize: "14px" }}>
-      If you have questions or did not expect this email, please contact{" "}
-      <Link
-        href={`mailto:${isChip ? EMAIL_CONFIG.CHIP_EMAIL : EMAIL_CONFIG.SPA_EMAIL}`}
-        style={{ color: "#fff", textDecoration: "underline" }}
-      >
-        {isChip ? EMAIL_CONFIG.CHIP_EMAIL : EMAIL_CONFIG.SPA_EMAIL}
-      </Link>{" "}
-      or your state lead.
-    </Text>
-    <Text>Thank you!</Text>
-  </Section>
+const FollowUpNotice = ({
+  isChip,
+  includeStateLead = true,
+  includeDidNotExpect = true,
+}: {
+  isChip?: boolean;
+  includeStateLead?: boolean;
+  includeDidNotExpect?: boolean;
+}) => (
+  <>
+    <Divider />
+    {isChip ? (
+      <Section>
+        <Text style={{ marginTop: "8px", fontSize: "14px" }}>
+          If you have any questions, please contact{" "}
+          <Link href={`mailto:${EMAIL_CONFIG.CHIP_EMAIL}`} style={{ textDecoration: "underline" }}>
+            {EMAIL_CONFIG.CHIP_EMAIL}
+          </Link>
+          {includeStateLead ? " or your state lead." : "."}
+        </Text>
+      </Section>
+    ) : (
+      <Section>
+        <Text style={{ marginTop: "8px", fontSize: "14px" }}>
+          {`If you have any questions${
+            includeDidNotExpect ? " or did not expect this email" : ""
+          }, please contact `}
+          <Link href={`mailto:${EMAIL_CONFIG.SPA_EMAIL}`} style={{ textDecoration: "underline" }}>
+            {EMAIL_CONFIG.SPA_EMAIL}
+          </Link>
+          {includeStateLead ? " or your state lead." : "."}
+        </Text>
+      </Section>
+    )}
+  </>
 );
 
 const EmailFooter = ({ children }: { children: React.ReactNode }) => (
@@ -233,40 +278,55 @@ const BasicFooter = () => (
   </EmailFooter>
 );
 
-const WithdrawRAI = ({
-  id,
-  submitterName,
-  submitterEmail,
-}: {
-  id: string;
-  submitterName: string;
-  submitterEmail: string;
-}) => (
-  <Section>
-    <Heading as="h2">
-      The OneMAC Submission Portal received a request to withdraw the Formal RAI Response. You are
-      receiving this email notification as the Formal RAI for {id} was withdrawn by {submitterName}{" "}
-      {submitterEmail}.
-    </Heading>
-  </Section>
-);
+export interface WithdrawRAIProps {
+  variables: Events["WithdrawRai"] & CommonEmailVariables & { emails: EmailAddresses };
+  relatedEvent: Events["RespondToRai"];
+}
 
-const getCpocEmail = (item: any): string[] => {
+const WithdrawRAI: React.FC<WithdrawRAIProps> = ({ variables, relatedEvent }) => {
+  if (!relatedEvent) {
+    return (
+      <Section>
+        <Heading as="h2">
+          {`The OneMAC Submission Portal received a request to withdraw a Formal RAI Response. You are receiving this email notification as the Formal RAI was withdrawn by ${variables.submitterName} ${variables.submitterEmail}.`}
+        </Heading>
+        <Text style={styles.text.description}>
+          Note: The original RAI response details could not be retrieved.
+        </Text>
+      </Section>
+    );
+  }
+
+  return (
+    <Section>
+      <Heading as="h2">
+        {`The OneMAC Submission Portal received a request to withdraw the Formal RAI Response ${relatedEvent.id}. You are receiving this email notification as the Formal RAI for ${relatedEvent.id} was withdrawn by ${variables.submitterName} ${variables.submitterEmail}.`}
+      </Heading>
+    </Section>
+  );
+};
+
+const getCpocEmail = (item?: os.main.ItemResult): string[] => {
   try {
-    const { leadAnalystName, leadAnalystEmail } = item._source;
-    return [`${leadAnalystName} <${leadAnalystEmail}>`];
+    if (item?._source?.leadAnalystEmail && item?._source?.leadAnalystName) {
+      const cpocEmail = `${item._source.leadAnalystName} <${item._source.leadAnalystEmail}>`;
+      return [cpocEmail];
+    }
+    return [];
   } catch (e) {
-    console.error("Error getting CPCO email", e);
+    console.error("Error getting CPOC email", e);
     return [];
   }
 };
 
-const getSrtEmails = (item: any): string[] => {
+const getSrtEmails = (item?: os.main.ItemResult): string[] => {
   try {
-    const reviewTeam = item._source.reviewTeam;
-    if (!reviewTeam) return [];
-
-    return reviewTeam.map((reviewer: any) => `${reviewer.name} <${reviewer.email}>`);
+    if (item?._source?.reviewTeam && item._source.reviewTeam.length > 0) {
+      return item._source.reviewTeam.map(
+        (reviewer: { name: string; email: string }) => `${reviewer.name} <${reviewer.email}>`,
+      );
+    }
+    return [];
   } catch (e) {
     console.error("Error getting SRT emails", e);
     return [];
@@ -277,15 +337,16 @@ export {
   Textarea,
   EmailNav,
   LoginInstructions,
+  SubDocHowToAccess,
   DetailsHeading,
+  Divider,
   Attachments,
   PackageDetails,
   MailboxNotice,
-  ContactStateLead,
+  FollowUpNotice,
   BasicFooter,
   WithdrawRAI,
+  EmailFooter,
   getCpocEmail,
   getSrtEmails,
-  EmailFooter,
-  SpamNotice,
 };

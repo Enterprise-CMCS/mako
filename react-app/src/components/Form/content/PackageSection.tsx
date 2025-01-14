@@ -1,5 +1,5 @@
 import { BLANK_VALUE } from "@/consts";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { AuthorityUnion } from "shared-types";
 
 export const getIdLabel = (authority: AuthorityUnion) => {
@@ -33,11 +33,11 @@ export const PackageSection = () => {
   return (
     <section className="flex flex-col mb-8 space-y-8">
       <div>
-        <p>{getIdLabel(authority)}</p>
+        <p className="font-bold">{getIdLabel(authority)}</p>
         <p className="text-xl">{id}</p>
       </div>
       <div>
-        <p>Authority</p>
+        <p className="font-bold">Authority</p>
         <p className="text-xl">{getAuthorityLabel(authority)}</p>
       </div>
     </section>

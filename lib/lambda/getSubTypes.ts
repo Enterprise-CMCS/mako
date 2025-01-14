@@ -1,16 +1,16 @@
+import { handleOpensearchError } from "./utils";
 import { APIGatewayEvent } from "aws-lambda";
-import * as os from "libs/opensearch-lib";
 import { response } from "libs/handler-lib";
+import * as os from "libs/opensearch-lib";
+import { getDomainAndNamespace } from "libs/utils";
 
-type GetSubTypesBoby = {
+type GetSubTypesBody = {
   authorityId: string;
   typeIds: string[];
 };
 
 export const querySubTypes = async (authorityId: string, typeIds: string[]) => {
-  if (!process.env.osDomain) {
-    throw new Error("process.env.osDomain must be defined");
-  }
+  const { index, domain } = getDomainAndNamespace("subtypes");
 
   const query = {
     size: 200,
@@ -48,11 +48,7 @@ export const querySubTypes = async (authorityId: string, typeIds: string[]) => {
     ],
   };
 
-  return await os.search(
-    process.env.osDomain,
-    `${process.env.indexNamespace}subtypes`,
-    query,
-  );
+  return await os.search(domain, index, query);
 };
 
 export const getSubTypes = async (event: APIGatewayEvent) => {
@@ -62,7 +58,7 @@ export const getSubTypes = async (event: APIGatewayEvent) => {
       body: { message: "Event body required" },
     });
   }
-  const body = JSON.parse(event.body) as GetSubTypesBoby;
+  const body = JSON.parse(event.body) as GetSubTypesBody;
   try {
     const result = await querySubTypes(body.authorityId, body.typeIds);
 
@@ -77,11 +73,7 @@ export const getSubTypes = async (event: APIGatewayEvent) => {
       body: result,
     });
   } catch (err) {
-    console.error({ err });
-    return response({
-      statusCode: 500,
-      body: { message: "Internal server error" },
-    });
+    return response(handleOpensearchError(err));
   }
 };
 

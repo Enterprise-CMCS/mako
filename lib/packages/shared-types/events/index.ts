@@ -56,5 +56,8 @@ export type Events = {
   TempExtension: z.infer<typeof temporaryExtension.schema>;
   NewAppKSubmission: z.infer<typeof appk.schema>;
   RespondToRai: z.infer<typeof respondToRai.schema>;
+  UploadSubsequentDocuments: z.infer<typeof uploadSubsequentDocuments.schema>;
   WithdrawPackage: z.infer<typeof withdrawPackage.schema>;
+  WithdrawRai: z.infer<typeof withdrawRai.schema>;
+  ToggleWithdrawRai: z.infer<typeof toggleWithdrawRai.schema>;
 };

@@ -15,7 +15,7 @@ import pluralize from "pluralize";
 import { useEffect, useState } from "react";
 
 const TWENTY_MINS_IN_MILS = 1000;
-const TEN_MINS_IN_MILS = 60 * 5;
+const TEN_MINS_IN_MILS = 30;
 
 export const TimeoutModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

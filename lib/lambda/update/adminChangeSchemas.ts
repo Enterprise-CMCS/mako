@@ -1,35 +1,56 @@
 import { z } from "zod";
 
-export const deleteAdminChangeSchema = z
-  .object({
-    id: z.string(),
-    deleted: z.boolean(),
-    adminChangeType: z.literal("delete"),
-  })
-  .and(z.record(z.string(), z.any()));
+export const deleteAdminChangeSchema = z.object({
+  id: z.string(),
+  deleted: z.boolean(),
+  adminChangeType: z.literal("delete"),
+});
+// .and(z.record(z.string(), z.any()));
 
-export const updateValuesAdminChangeSchema = z
-  .object({
-    id: z.string(),
-    adminChangeType: z.literal("update-values"),
-  })
-  .and(z.record(z.string(), z.any()));
+export const updateValuesAdminChangeSchema = z.object({
+  id: z.string(),
+  adminChangeType: z.literal("update-values"),
+});
+// .and(z.record(z.string(), z.any()));
 
-export const updateIdAdminChangeSchema = z
-  .object({
-    id: z.string(),
-    adminChangeType: z.literal("update-id"),
-    idToBeUpdated: z.string(),
-  })
-  .and(z.record(z.string(), z.any()));
+export const updateIdAdminChangeSchema = z.object({
+  id: z.string(),
+  adminChangeType: z.literal("update-id"),
+  idToBeUpdated: z.string(),
+});
+// .and(z.record(z.string(), z.any()));
 
-export const splitSPAAdminChangeSchema = z
-  .object({
-    id: z.string(),
-    adminChangeType: z.literal("split-spa"),
-    idToBeUpdated: z.string(),
-  })
-  .and(z.record(z.string(), z.any()));
+export const splitSPAAdminChangeSchema = z.object({
+  id: z.string(),
+  adminChangeType: z.literal("split-spa"),
+  idToBeUpdated: z.string(),
+});
+// .and(z.record(z.string(), z.any()));
+
+export const submitNOSOAdminSchema = z.object({
+  id: z.string(),
+  authority: z.string(),
+  status: z.string(),
+  submitterEmail: z.string(),
+  submitterName: z.string(),
+  adminChangeType: z.literal("NOSO"),
+  mockEvent: z.string(),
+  changeMade: z.string(),
+  changeReason: z.string(),
+});
+
+export const extendSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
+  packageId: z.string(),
+  origin: z.string(),
+  makoChangedDate: z.number(),
+  changedDate: z.number(),
+  statusDate: z.number(),
+  isAdminChange: z.boolean(),
+  state: z.string(),
+  event: z.string(),
+  stateStatus: z.string(),
+  cmsStatus: z.string(),
+});
 
 export const transformDeleteSchema = (offset: number) =>
   deleteAdminChangeSchema.transform((data) => ({
@@ -69,19 +90,16 @@ export const transformedSplitSPASchema = splitSPAAdminChangeSchema.transform((da
   changedDate: currentTime,
 }));
 
-export const submitNOSOAdminSchema = z.object({
-  id: z.string(),
-  authority: z.string(),
-  status: z.string(),
-  submitterEmail: z.string(),
-  submitterName: z.string(),
-  adminChangeType: z.literal("NOSO"),
-  mockEvent: z.string(),
-  changeMade: z.string(),
-  changeReason: z.string(),
-});
+export const transformSubmitValuesSchema = extendSubmitNOSOAdminSchema.transform((data) => ({
+  ...data,
+  adminChangeType: "NOSO",
+  event: "NOSO",
+  id: data.id,
+  packageId: data.id,
+  timestamp: Date.now(),
+}));
 
-export const extendSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
+export const extendedAdminSchema = submitNOSOAdminSchema.extend({
   packageId: z.string(),
   origin: z.string(),
   makoChangedDate: z.number(),
@@ -94,11 +112,10 @@ export const extendSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
   cmsStatus: z.string(),
 });
 
-export const transformSubmitValuesSchema = extendSubmitNOSOAdminSchema.transform((data) => ({
-  ...data,
-  adminChangeType: "NOSO",
-  event: "NOSO",
-  id: data.id,
-  packageId: data.id,
-  timestamp: Date.now(),
-}));
+const extendSchema = <Schema extends z.ZodObject<any>>(schema: Schema) =>
+  schema.extend(extendedAdminSchema.shape);
+
+export const fullDeleteAdminChangeSchema = extendSchema(deleteAdminChangeSchema);
+export const fullUpdateValuesAdminChangeSchema = extendSchema(updateValuesAdminChangeSchema);
+export const fullUpdateIdAdminChangeSchema = extendSchema(updateIdAdminChangeSchema);
+export const fullSplitSPAAdminChangeSchema = extendSchema(splitSPAAdminChangeSchema);

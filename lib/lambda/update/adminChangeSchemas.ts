@@ -39,31 +39,22 @@ export const submitNOSOAdminSchema = z.object({
   changeReason: z.string(),
 });
 
-// export const extendSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
-//   packageId: z.string(),
-//   origin: z.string(),
-//   makoChangedDate: z.number(),
-//   changedDate: z.number(),
-//   statusDate: z.number(),
-//   isAdminChange: z.boolean(),
-//   state: z.string(),
-//   event: z.string(),
-//   stateStatus: z.string(),
-//   cmsStatus: z.string(),
-// });
+// change name
+export const fullSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
+  packageId: z.string(),
+  state: z.string(),
+  event: z.string(),
+  stateStatus: z.string(),
+  cmsStatus: z.string(),
+});
 
 export const extendedAdminSchema = {
-  packageId: z.string(),
   origin: z.string(),
   makoChangedDate: z.number(),
   changedDate: z.number(),
   statusDate: z.number(),
   isAdminChange: z.boolean(),
   adminChangeType: z.string(),
-  state: z.string(),
-  event: z.string(),
-  stateStatus: z.string(),
-  cmsStatus: z.string(),
 };
 
 const extendSchema = <Schema extends z.ZodObject<any>>(schema: Schema) =>
@@ -73,7 +64,7 @@ export const fullDeleteAdminChangeSchema = extendSchema(deleteAdminChangeSchema)
 export const fullUpdateValuesAdminChangeSchema = extendSchema(updateValuesAdminChangeSchema);
 export const fullUpdateIdAdminChangeSchema = extendSchema(updateIdAdminChangeSchema);
 export const fullSplitSPAAdminChangeSchema = extendSchema(splitSPAAdminChangeSchema);
-export const extendSubmitNOSOAdminSchema = extendSchema(submitNOSOAdminSchema);
+export const extendSubmitNOSOAdminSchema = extendSchema(fullSubmitNOSOAdminSchema);
 
 export const transformDeleteSchema = (offset: number) =>
   fullDeleteAdminChangeSchema.transform((data) => ({

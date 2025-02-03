@@ -59,6 +59,7 @@ export const extendedAdminSchema = {
   changedDate: z.number(),
   statusDate: z.number(),
   isAdminChange: z.boolean(),
+  adminChangeType: z.string(),
   state: z.string(),
   event: z.string(),
   stateStatus: z.string(),

@@ -64,7 +64,7 @@ export const transformedSplitSPASchema = splitSPAAdminChangeSchema.transform((da
   event: "split-spa",
   packageId: data.id,
   id: `${data.id}`,
-  timestamp: currentTime,
+  timestamp: Date.now(),
   makoChangedDate: currentTime,
   changedDate: currentTime,
 }));

@@ -4,18 +4,18 @@ import { Document, transforms } from "shared-types/opensearch/main";
 import { decodeBase64WithUtf8 } from "shared-utils";
 import { isBefore } from "date-fns";
 import {
-  deleteAdminChangeSchema,
-  updateValuesAdminChangeSchema,
-  updateIdAdminChangeSchema,
-  splitSPAAdminChangeSchema,
+  fullDeleteAdminChangeSchema,
+  fullUpdateValuesAdminChangeSchema,
+  fullUpdateIdAdminChangeSchema,
+  fullSplitSPAAdminChangeSchema,
   extendSubmitNOSOAdminSchema,
 } from "./update/adminChangeSchemas";
 
 const removeDoubleQuotesSurroundingString = (str: string) => str.replace(/^"|"$/g, "");
-const adminRecordSchema = deleteAdminChangeSchema
-  .or(updateValuesAdminChangeSchema)
-  .or(updateIdAdminChangeSchema)
-  .or(splitSPAAdminChangeSchema)
+const adminRecordSchema = fullDeleteAdminChangeSchema
+  .or(fullUpdateValuesAdminChangeSchema)
+  .or(fullUpdateIdAdminChangeSchema)
+  .or(fullSplitSPAAdminChangeSchema)
   .or(extendSubmitNOSOAdminSchema);
 
 type OneMacRecord = {

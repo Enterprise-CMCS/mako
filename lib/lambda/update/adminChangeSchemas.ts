@@ -29,21 +29,21 @@ export const splitSPAAdminChangeSchema = z.object({
 
 export const submitNOSOAdminSchema = z.object({
   id: z.string(),
-  authority: z.string(),
+  // authority: z.string(),
   status: z.string(),
   submitterEmail: z.string(),
   submitterName: z.string(),
   adminChangeType: z.literal("NOSO"),
-  mockEvent: z.string(),
-  changeMade: z.string(),
-  changeReason: z.string(),
+  // mockEvent: z.string(),
+  // changeMade: z.string(),
+  // changeReason: z.string(),
 });
 
 // change name
 export const fullSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
   packageId: z.string(),
   state: z.string(),
-  event: z.string(),
+  // event: z.string(),
   stateStatus: z.string(),
   statusDate: z.number(),
   cmsStatus: z.string(),
@@ -51,10 +51,15 @@ export const fullSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
 
 export const extendedAdminSchema = {
   origin: z.string(),
+  authority: z.string(),
+  event: z.string(),
   makoChangedDate: z.number(),
   changedDate: z.number(),
   isAdminChange: z.boolean(),
   adminChangeType: z.string(),
+  changeMade: z.string(),
+  changeReason: z.string(),
+  mockEvent: z.string().optional(),
 };
 
 const extendSchema = <Schema extends z.ZodObject<any>>(schema: Schema) =>

@@ -45,6 +45,7 @@ export const fullSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
   state: z.string(),
   event: z.string(),
   stateStatus: z.string(),
+  statusDate: z.number(),
   cmsStatus: z.string(),
 });
 
@@ -52,7 +53,6 @@ export const extendedAdminSchema = {
   origin: z.string(),
   makoChangedDate: z.number(),
   changedDate: z.number(),
-  statusDate: z.number(),
   isAdminChange: z.boolean(),
   adminChangeType: z.string(),
 };

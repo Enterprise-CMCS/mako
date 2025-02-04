@@ -43,7 +43,7 @@ export const submitNOSOAdminSchema = z.object({
 export const fullSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
   packageId: z.string(),
   state: z.string(),
-  // event: z.string(),
+  event: z.string(),
   stateStatus: z.string(),
   statusDate: z.number(),
   cmsStatus: z.string(),
@@ -52,7 +52,7 @@ export const fullSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
 export const extendedAdminSchema = {
   origin: z.string(),
   authority: z.string(),
-  event: z.string(),
+  // event: z.string(),
   makoChangedDate: z.number(),
   changedDate: z.number(),
   isAdminChange: z.boolean(),

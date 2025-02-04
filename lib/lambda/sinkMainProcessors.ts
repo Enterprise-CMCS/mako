@@ -57,7 +57,7 @@ const getOneMacRecordWithAllProperties = (
 
     if (safeRecord.success === false) {
       console.log(safeRecord, "WHAT IS SAFERECORD");
-      console.log(safeRecord, "SAFE REC ERROR");
+      console.log(safeRecord.error, "SAFE REC ERROR");
       console.log(`Skipping package with invalid format for type "${record.adminChangeType}"`);
 
       logError({

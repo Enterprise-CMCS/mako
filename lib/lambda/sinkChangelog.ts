@@ -76,7 +76,9 @@ const processAndIndex = async ({
         const result = schema.safeParse(record);
 
         if (result.success) {
+          result.data.
           if (result.data.adminChangeType === "update-id" && "idToBeUpdated" in result.data) {
+            console.log(docs, "WHAT IS DOCS");
             // Push doc with package being soft deleted
             docs.forEach((log) => {
               const recordOffset = log.id.split("-").at(-1);

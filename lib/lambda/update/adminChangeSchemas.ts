@@ -1,4 +1,5 @@
-import { z } from "zod";
+import { z, ZodEffects, ZodObject } from "zod";
+import { transforms } from "lib/packages/shared-types/opensearch/main";
 
 export const deleteAdminChangeSchema = z.object({
   id: z.string(),
@@ -49,21 +50,38 @@ export const fullSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
   cmsStatus: z.string(),
 });
 
-export const extendedAdminSchema = {
-  origin: z.string(),
-  authority: z.string(),
-  submitterEmail: z.string(),
-  submitterName: z.string(),
-  makoChangedDate: z.number(),
-  changedDate: z.number(),
-  isAdminChange: z.boolean(),
-  adminChangeType: z.string(),
-  changeMade: z.string(),
-  changeReason: z.string(),
-  mockEvent: z.string().optional(),
-  statusDate: z.number(),
-  cmsStatus: z.string(),
+const getBaseSchema = (schema: any): ZodObject<any, any, any> => {
+  if (schema instanceof ZodEffects) {
+    return getBaseSchema(schema._def.schema);
+  }
+  if (schema instanceof ZodObject) {
+    return schema;
+  }
+  throw new Error("Unexpected schema type: Only ZodObject and ZodEffects are supported.");
 };
+
+const mergeSchemas = (schemas: z.ZodObject<any, any>[]) => {
+  return schemas.reduce((allSchemas, schema) => allSchemas.merge(schema), z.object({}));
+};
+
+const allTransformedSchemas = Object.values(transforms).map((doc) => getBaseSchema(doc.transform));
+const mergedTransformedSchemas = mergeSchemas(allTransformedSchemas);
+
+// export const extendedAdminSchema = {
+//   origin: z.string(),
+//   authority: z.string(),
+//   submitterEmail: z.string(),
+//   submitterName: z.string(),
+//   makoChangedDate: z.number(),
+//   changedDate: z.number(),
+//   isAdminChange: z.boolean(),
+//   adminChangeType: z.string(),
+//   changeMade: z.string(),
+//   changeReason: z.string(),
+//   mockEvent: z.string().optional(),
+//   statusDate: z.number(),
+//   cmsStatus: z.string(),
+// };
 
 // export const submitNOSOAdminSchema = z.object({
 //   id: z.string(),
@@ -90,14 +108,24 @@ export const extendedAdminSchema = {
 //   cmsStatus: z.string(),
 // });
 
-const extendSchema = <Schema extends z.ZodObject<any>>(schema: Schema) =>
-  schema.extend(extendedAdminSchema);
+// const extendSchema = <Schema extends z.ZodObject<any>>(schema: Schema) =>
+//   schema.extend(extendedAdminSchema);
 
-export const fullDeleteAdminChangeSchema = extendSchema(deleteAdminChangeSchema);
-export const fullUpdateValuesAdminChangeSchema = extendSchema(updateValuesAdminChangeSchema);
-export const fullUpdateIdAdminChangeSchema = extendSchema(updateIdAdminChangeSchema);
-export const fullSplitSPAAdminChangeSchema = extendSchema(splitSPAAdminChangeSchema);
-export const extendSubmitNOSOAdminSchema = extendSchema(fullSubmitNOSOAdminSchema);
+// export const fullDeleteAdminChangeSchema = extendSchema(deleteAdminChangeSchema);
+// export const fullUpdateValuesAdminChangeSchema = extendSchema(updateValuesAdminChangeSchema);
+// export const fullUpdateIdAdminChangeSchema = extendSchema(updateIdAdminChangeSchema);
+// export const fullSplitSPAAdminChangeSchema = extendSchema(splitSPAAdminChangeSchema);
+// export const extendSubmitNOSOAdminSchema = extendSchema(fullSubmitNOSOAdminSchema);
+
+export const fullDeleteAdminChangeSchema = deleteAdminChangeSchema.merge(mergedTransformedSchemas);
+export const fullUpdateValuesAdminChangeSchema =
+  updateValuesAdminChangeSchema.merge(mergedTransformedSchemas);
+export const fullUpdateIdAdminChangeSchema =
+  updateIdAdminChangeSchema.merge(mergedTransformedSchemas);
+export const fullSplitSPAAdminChangeSchema =
+  splitSPAAdminChangeSchema.merge(mergedTransformedSchemas);
+export const extendSubmitNOSOAdminSchema =
+  fullSubmitNOSOAdminSchema.merge(mergedTransformedSchemas);
 
 export const transformDeleteSchema = (offset: number) =>
   fullDeleteAdminChangeSchema.transform((data) => ({

@@ -31,8 +31,8 @@ export const submitNOSOAdminSchema = z.object({
   id: z.string(),
   // authority: z.string(),
   status: z.string(),
-  submitterEmail: z.string(),
-  submitterName: z.string(),
+  // submitterEmail: z.string(),
+  // submitterName: z.string(),
   adminChangeType: z.literal("NOSO"),
   // mockEvent: z.string(),
   // changeMade: z.string(),
@@ -52,6 +52,8 @@ export const fullSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
 export const extendedAdminSchema = {
   origin: z.string(),
   authority: z.string(),
+  submitterEmail: z.string(),
+  submitterName: z.string(),
   makoChangedDate: z.number(),
   changedDate: z.number(),
   isAdminChange: z.boolean(),
@@ -59,6 +61,8 @@ export const extendedAdminSchema = {
   changeMade: z.string(),
   changeReason: z.string(),
   mockEvent: z.string().optional(),
+  statusDate: z.number(),
+  cmsStatus: z.string(),
 };
 
 // export const submitNOSOAdminSchema = z.object({

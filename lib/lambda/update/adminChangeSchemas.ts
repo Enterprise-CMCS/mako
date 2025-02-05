@@ -52,7 +52,6 @@ export const fullSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
 export const extendedAdminSchema = {
   origin: z.string(),
   authority: z.string(),
-  // event: z.string(),
   makoChangedDate: z.number(),
   changedDate: z.number(),
   isAdminChange: z.boolean(),
@@ -61,6 +60,31 @@ export const extendedAdminSchema = {
   changeReason: z.string(),
   mockEvent: z.string().optional(),
 };
+
+// export const submitNOSOAdminSchema = z.object({
+//   id: z.string(),
+//   authority: z.string(),
+//   status: z.string(),
+//   submitterEmail: z.string(),
+//   submitterName: z.string(),
+//   adminChangeType: z.literal("NOSO"),
+//   mockEvent: z.string(),
+//   changeMade: z.string(),
+//   changeReason: z.string(),
+// });
+
+// export const extendSubmitNOSOAdminSchema = submitNOSOAdminSchema.extend({
+//   packageId: z.string(),
+//   origin: z.string(),
+//   makoChangedDate: z.number(),
+//   changedDate: z.number(),
+//   statusDate: z.number(),
+//   isAdminChange: z.boolean(),
+//   state: z.string(),
+//   event: z.string(),
+//   stateStatus: z.string(),
+//   cmsStatus: z.string(),
+// });
 
 const extendSchema = <Schema extends z.ZodObject<any>>(schema: Schema) =>
   schema.extend(extendedAdminSchema);

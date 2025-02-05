@@ -10,13 +10,14 @@ import {
   fullSplitSPAAdminChangeSchema,
   extendSubmitNOSOAdminSchema,
 } from "./update/adminChangeSchemas";
+import { z } from "zod";
 
 const removeDoubleQuotesSurroundingString = (str: string) => str.replace(/^"|"$/g, "");
-const adminRecordSchema = fullDeleteAdminChangeSchema
-  .or(fullUpdateValuesAdminChangeSchema)
-  .or(fullUpdateIdAdminChangeSchema)
-  .or(fullSplitSPAAdminChangeSchema)
-  .or(extendSubmitNOSOAdminSchema);
+// const adminRecordSchema = fullDeleteAdminChangeSchema
+//   .or(fullUpdateValuesAdminChangeSchema)
+//   .or(fullUpdateIdAdminChangeSchema)
+//   .or(fullSplitSPAAdminChangeSchema)
+//   .or(extendSubmitNOSOAdminSchema);
 
 type OneMacRecord = {
   id: string;
@@ -53,8 +54,17 @@ const getOneMacRecordWithAllProperties = (
   const record = JSON.parse(decodeBase64WithUtf8(value));
 
   if (isRecordAnAdminOneMacRecord(record)) {
-    const safeRecord = adminRecordSchema.safeParse(record);
+    // const safeRecord = adminRecordSchema.safeParse(record);
+    const schemaMap: Record<string, z.ZodObject<any>> = {
+      delete: fullDeleteAdminChangeSchema,
+      "update-values": fullUpdateValuesAdminChangeSchema,
+      "update-id": fullUpdateIdAdminChangeSchema,
+      "split-spa": fullSplitSPAAdminChangeSchema,
+      NOSO: extendSubmitNOSOAdminSchema,
+    };
 
+    const selectedRecord = schemaMap[record.adminChangeType] ?? z.never();
+    const safeRecord = selectedRecord.safeParse(record);
     if (safeRecord.success === false) {
       console.log(safeRecord, "WHAT IS SAFERECORD");
       console.log(safeRecord.error, "SAFE REC ERROR");

@@ -170,6 +170,10 @@
       {
         "Name": "custom:cms-roles",
         "Value": "onemac-micro-reviewer"
+      },
+      {
+        "Name": "custom:ismemberof",
+        "Value": "ONEMAC_USER_D"
       }
     ]
   },
@@ -199,6 +203,10 @@
       {
         "Name": "custom:cms-roles",
         "Value": "onemac-micro-reviewer,onemac-micro-super"
+      },
+      {
+        "Name": "custom:ismemberof",
+        "Value": "ONEMAC_USER_D"
       }
     ]
   },
@@ -228,6 +236,10 @@
       {
         "Name": "custom:cms-roles",
         "Value": "onemac-micro-reviewer"
+      },
+      {
+        "Name": "custom:ismemberof",
+        "Value": "ONEMAC_USER_D"
       }
     ]
   },
@@ -257,6 +269,10 @@
       {
         "Name": "custom:cms-roles",
         "Value": "onemac-micro-helpdesk"
+      },
+      {
+        "Name": "custom:ismemberof",
+        "Value": "ONEMAC_USER_D"
       }
     ]
   },
@@ -286,6 +302,10 @@
       {
         "Name": "custom:cms-roles",
         "Value": "onemac-micro-helpdesk"
+      },
+      {
+        "Name": "custom:ismemberof",
+        "Value": "ONEMAC_USER_D"
       }
     ]
   },
@@ -423,6 +443,10 @@
       {
         "Name": "custom:cms-roles",
         "Value": "onemac-micro-reviewer"
+      },
+      {
+        "Name": "custom:ismemberof",
+        "Value": "ONEMAC_USER_D"
       }
     ]
   }

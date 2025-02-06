@@ -62,8 +62,9 @@ const getOneMacRecordWithAllProperties = (
       "split-spa": fullSplitSPAAdminChangeSchema,
       NOSO: extendSubmitNOSOAdminSchema,
     };
-
+    
     const selectedRecord = schemaMap[record.adminChangeType] ?? z.never();
+    console.log(selectedRecord, "SCHEMA MAP RECORD");
     const safeRecord = selectedRecord.safeParse(record);
     if (safeRecord.success === false) {
       console.log(safeRecord, "WHAT IS SAFERECORD");

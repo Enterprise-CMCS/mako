@@ -57,6 +57,7 @@ const getBaseSchema = (schema: any): ZodObject<any, any, any> => {
   if (schema instanceof ZodObject) {
     return schema;
   }
+  console.log(schema);
   throw new Error("Unexpected schema type: Only ZodObject and ZodEffects are supported.");
 };
 

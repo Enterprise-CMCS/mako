@@ -27,7 +27,6 @@ export const getAvailableActions = (
     if (index === 0) return currentActions;
     return acc.filter((action: Action) => currentActions.includes(action));
   }, []);
-
   const allRaiRequestedDates = allMembers
     .filter((member) => (member as opensearch.main.SeatoolDocument)?.raiRequestedDate !== undefined)
     .map((member) => (member as opensearch.main.SeatoolDocument)?.raiRequestedDate);
@@ -36,5 +35,12 @@ export const getAvailableActions = (
     const actionsToRemove = [Action.RESPOND_TO_RAI, Action.WITHDRAW_RAI];
     commonActions = commonActions.filter((action: any) => !actionsToRemove.includes(action));
   }
-  return commonActions;
+
+  // We are sorting the actions based on the value they are in the order of the enum.
+  // If we want to update this order just move the values around.
+  const actionOrder = Object.values(Action);
+  const sortedActions = commonActions.sort(
+    (a, b) => actionOrder.indexOf(a) - actionOrder.indexOf(b),
+  );
+  return sortedActions;
 };
